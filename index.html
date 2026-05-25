@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaysia Agri-Bioscience Derivative Lab</title>
+    
+    <!-- Tailwind CSS for modern responsive UI styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for smooth mathematical animations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- KaTeX for beautiful, standard mathematical notation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    
+    <!-- Inter Font for clean, professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-gradient-to-r from-emerald-800 to-teal-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2 rounded-lg border border-white/20">
+                    <svg class="w-8 h-8 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">Malaysia Agri-Bioscience Derivative Lab</h1>
+                    <p class="text-xs text-emerald-100 font-light">Interactive Calculus Applications for Agricultural Undergraduate Programs</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-900/40 text-emerald-200 border border-emerald-500/30">
+                    Academic Simulation Portal
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Workspace -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 flex flex-col gap-8">
+        
+        <!-- Tab System for Academic Program Majors -->
+        <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap gap-2">
+            <button onclick="switchProgram('SFA')" id="btn-SFA" class="flex-1 min-w-[140px] px-4 py-3 rounded-xl transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                SFA: Agrotech
+            </button>
+            <button onclick="switchProgram('SFH')" id="btn-SFH" class="flex-1 min-w-[140px] px-4 py-3 rounded-xl transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                SFH: Animal Husbandry
+            </button>
+            <button onclick="switchProgram('SFM')" id="btn-SFM" class="flex-1 min-w-[140px] px-4 py-3 rounded-xl transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                SFM: Food Security
+            </button>
+            <button onclick="switchProgram('SFP')" id="btn-SFP" class="flex-1 min-w-[140px] px-4 py-3 rounded-xl transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                SFP: Agro Product Tech
+            </button>
+        </div>
+
+        <!-- Analytical Panels Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Side: Interactive Chart & Dynamic Calculations -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+                <!-- Visual Workspace -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                        <div>
+                            <h2 id="chart-title" class="text-lg font-bold text-slate-800">Growth Projection & Rate of Change</h2>
+                            <p class="text-xs text-slate-500">Click anywhere on the graph or drag the slider below to calculate rates of change.</p>
+                        </div>
+                        <div class="text-xs text-slate-400 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200 font-mono">
+                            Interactive Chart.js v4.x
+                        </div>
+                    </div>
+                    
+                    <!-- Chart canvas with fixed aspect ratio helper -->
+                    <div class="relative w-full h-[320px] sm:h-[400px]">
+                        <canvas id="derivativeChart"></canvas>
+                    </div>
+
+                    <!-- Slider fallback for high accuracy & touch device support -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <label id="slider-label" for="x-slider" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
+                            Manual Navigation Control
+                        </label>
+                        <div class="flex items-center gap-4">
+                            <span id="slider-min" class="text-xs font-mono text-slate-400">0</span>
+                            <input type="range" id="x-slider" step="0.1" class="w-full accent-emerald-600 h-2 bg-slate-200 rounded-lg cursor-pointer" />
+                            <span id="slider-max" class="text-xs font-mono text-slate-400">12</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instant Calculation Panel -->
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl shadow-xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-8 opacity-5">
+                        <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/>
+                        </svg>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/80 px-2.5 py-1 rounded border border-emerald-500/30">
+                        Dynamic Derivative Output
+                    </span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                        <div class="border-l-2 border-slate-700 pl-4">
+                            <span class="block text-xs text-slate-400 mb-1" id="x-metric-label">Input Stage (x)</span>
+                            <span class="text-2xl font-bold font-mono text-white" id="x-calc-val">--</span>
+                        </div>
+                        <div class="border-l-2 border-slate-700 pl-4">
+                            <span class="block text-xs text-slate-400 mb-1" id="y-metric-label">Function f(x)</span>
+                            <span class="text-2xl font-bold font-mono text-white" id="y-calc-val">--</span>
+                        </div>
+                        <div class="border-l-2 border-emerald-500 pl-4">
+                            <span class="block text-xs text-emerald-400 mb-1" id="dy-metric-label">Derivative f'(x)</span>
+                            <span class="text-2xl font-bold font-mono text-emerald-300" id="dy-calc-val">--</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Bioscience Explanation of calculated state -->
+                    <div class="mt-6 pt-6 border-t border-slate-700/60">
+                        <h4 class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-2">Layman's Bioscience Explanation & Management Action</h4>
+                        <p class="text-sm text-slate-200 leading-relaxed font-light" id="expert-explanation">
+                            Click on the chart or adjust the manual slider above to extract real-time bioscience interpretation of the rate of change!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Scientific Context, Mathematical Formula, and Malaysian Sources -->
+            <div class="lg:col-span-4 flex flex-col gap-6">
+                <!-- Mathematical Models Panel -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                    <h3 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 uppercase tracking-wider text-emerald-800">
+                        Biological Formulations
+                    </h3>
+                    <div class="mt-4 space-y-5">
+                        <div>
+                            <span class="block text-xs font-medium text-slate-400 uppercase tracking-tight mb-2">Original Model: $f(x)$</span>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center text-sm font-mono overflow-x-auto custom-scrollbar" id="fx-math-box">
+                                <!-- KaTeX content rendered here -->
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-medium text-slate-400 uppercase tracking-tight mb-2">First Derivative: $f'(x)$</span>
+                            <div class="bg-emerald-50/50 p-3 rounded-xl border border-emerald-100 text-center text-sm font-mono overflow-x-auto custom-scrollbar" id="dfx-math-box">
+                                <!-- KaTeX content rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Scenario Card -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                    <h3 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 uppercase tracking-wider text-emerald-800">
+                        Bioscience Scenario Context
+                    </h3>
+                    <div class="mt-4">
+                        <span id="case-title" class="text-md font-semibold text-slate-800 block mb-2">Scenario Title</span>
+                        <p id="case-description" class="text-sm text-slate-600 leading-relaxed font-light">
+                            Scenario description placeholder text...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Web Data Source Registry Card -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6">
+                    <h3 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 uppercase tracking-wider text-emerald-800">
+                        Malaysian Datasets Reference
+                    </h3>
+                    <div class="mt-4 space-y-3" id="source-list">
+                        <!-- References will be dynamically loaded -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs space-y-2">
+            <p>&copy; 2026 Malaysia Agri-Bioscience Interactive Lab. Developed for Undergraduate Bioscience Studies.</p>
+            <p class="text-slate-500 font-light">Disclaimer: Mathematical growth kinetics are designed with realistic coefficients obtained from biological growth trends published in the referenced regional reports.</p>
+        </div>
+    </footer>
+
+    <!-- App Logic Scripts -->
+    <script>
+        // System Config & Datasets
+        const PROGRAMS = {
+            SFA: {
+                name: "Agrotech (SFA)",
+                title: "Harumanis Mango Fruit Development Kinetics (Perlis)",
+                desc: "Calculating growth speed ($M'(t)$) is essential to forecast peak size. This logistical growth model dictates the mass of a Perlis Harumanis mango over 12 weeks following anthesis (flowering). Understanding derivative maxima helps agronomists schedule precise harvesting, fertilization, and crop protection before fruits hit biological saturation.",
+                fxLatex: "M(t) = \\frac{350}{1 + e^{-0.8(t - 6)}}",
+                dfxLatex: "M'(t) = \\frac{280 e^{-0.8(t - 6)}}{(1 + e^{-0.8(t - 6)})^2}",
+                xLabel: "Time (t)",
+                xUnit: "WAFB (Weeks After Full Bloom)",
+                yLabel: "Fruit Mass M(t)",
+                yUnit: "g (Grams)",
+                dyLabel: "Growth Rate M'(t)",
+                dyUnit: "g/week",
+                xMin: 0,
+                xMax: 12,
+                step: 0.1,
+                sources: [
+                    { name: "Jabatan Pertanian Negeri Perlis (Harumanis Manual)", url: "https://www.perlis.gov.my/pertanian/" },
+                    { name: "MARDI Food & Agrotech Research Portal", url: "https://www.mardi.gov.my" }
+                ],
+                // Math formulas
+                f: (t) => 350 / (1 + Math.exp(-0.8 * (t - 6))),
+                df: (t) => {
+                    const expVal = Math.exp(-0.8 * (t - 6));
+                    return (280 * expVal) / Math.pow(1 + expVal, 2);
+                },
+                getLayman: (t, y, dy) => {
+                    if (t < 3) {
+                        return `At week ${t.toFixed(1)}, the Harumanis is in its early cell division stage. It weighs only ${y.toFixed(1)}g and is growing slowly at ${dy.toFixed(2)} grams per week. Adding potassium fertilizers now will help build future cell structures.`;
+                    } else if (t >= 3 && t < 7) {
+                        return `At week ${t.toFixed(1)}, the fruit is in its rapid cell expansion phase. Currently growing at ${dy.toFixed(2)}g/week (near maximum speed!). Water irrigation is extremely critical right now to maintain high turgor pressure inside the pulp cells.`;
+                    } else if (t >= 7 && t < 10) {
+                        return `At week ${t.toFixed(1)}, growth rate decelerates to ${dy.toFixed(2)}g/week as it approaches maturity (${y.toFixed(1)}g). Starches are now turning into sugars; restrict water to maximize the signature sweetness!`;
+                    } else {
+                        return `At week ${t.toFixed(1)}, growth has virtually ceased (${dy.toFixed(2)}g/week). It has stabilized at a mature harvest weight of ${y.toFixed(1)}g. This is the optimal harvest window!`;
+                    }
+                }
+            },
+            SFH: {
+                name: "Animal Husbandry (SFH)",
+                title: "Kedah-Kelantan (KK) Beef Cattle Live Weight Performance",
+                desc: "Beef performance monitoring revolves around 'Average Daily Gain' (ADG). This model charts the growth weight ($W(t)$) of native Malaysian Kedah-Kelantan beef cattle over 24 months. The derivative $W'(t)$ delivers the instantaneous rate of gain, pinpointing the feed conversion efficiency drop-off where further feeding becomes economically inefficient.",
+                fxLatex: "W(t) = 300(1 - 0.9 e^{-0.08 t})",
+                dfxLatex: "W'(t) = 21.6 e^{-0.08 t}",
+                xLabel: "Age (t)",
+                xUnit: "Months",
+                yLabel: "Live Weight W(t)",
+                yUnit: "kg",
+                dyLabel: "Instantaneous Growth Velocity W'(t)",
+                dyUnit: "kg/month",
+                xMin: 0,
+                xMax: 24,
+                step: 0.2,
+                sources: [
+                    { name: "MARDI Livestock Research Division", url: "https://www.mardi.gov.my" },
+                    { name: "Department of Veterinary Services Malaysia (DVS)", url: "https://www.dvs.gov.my" }
+                ],
+                f: (t) => 300 * (1 - 0.9 * Math.exp(-0.08 * t)),
+                df: (t) => 21.6 * Math.exp(-0.08 * t),
+                getLayman: (t, y, dy) => {
+                    const daily = (dy / 30).toFixed(3);
+                    if (t < 6) {
+                        return `At ${t.toFixed(1)} months of age, the young calf grows at a high velocity of ${dy.toFixed(2)} kg/month (~${daily} kg/day) primarily building muscle structure. Feed with starter creep feed containing high crude protein (16-18%).`;
+                    } else if (t >= 6 && t < 15) {
+                        return `At ${t.toFixed(1)} months, the heifer/steer is in its key frame development stage, gaining ${dy.toFixed(2)} kg/month. Maintain a balanced ratio of Brachiaria decumbens pasture and oil palm frond silage.`;
+                    } else {
+                        return `At ${t.toFixed(1)} months, growth rate drops to ${dy.toFixed(2)} kg/month. Feed conversion efficiency is declining as energy is diverted to fat deposition. This indicates the optimal slaughter/marketing age is near.`;
+                    }
+                }
+            },
+            SFM: {
+                name: "Food Security (SFM)",
+                title: "Sekinchan Paddy Yield Response Curve to Nitrogen",
+                desc: "Optimizing paddy yield per unit area is vital to national self-sufficiency. This model depicts the quadratic yield curve of MARDI-certified MR297 paddy seed ($Y(N)$) based on applied Nitrogen fertilizer in Sekinchan, Selangor. The derivative $Y'(N)$ represents marginal agronomic efficiency—identifying the sweet spot before fertilizer overload causes toxic runoff and soil acidification.",
+                fxLatex: "Y(N) = -0.0001 N^2 + 0.045 N + 3.2",
+                dfxLatex: "Y'(N) = -0.0002 N + 0.045",
+                xLabel: "Nitrogen Input (N)",
+                xUnit: "kg/ha (Kilograms per Hectare)",
+                yLabel: "Paddy Yield Y(N)",
+                yUnit: "t/ha (Metric Tonnes/Hectare)",
+                dyLabel: "Marginal Yield Return Y'(N)",
+                dyUnit: "t/kg-Nitrogen",
+                xMin: 0,
+                xMax: 250,
+                step: 1,
+                sources: [
+                    { name: "Muda Agricultural Development Authority (MADA)", url: "https://www.mada.gov.my" },
+                    { name: "MARDI Rice Research Institute", url: "https://www.mardi.gov.my" }
+                ],
+                f: (N) => -0.0001 * Math.pow(N, 2) + 0.045 * N + 3.2,
+                df: (N) => -0.0002 * N + 0.045,
+                getLayman: (N, y, dy) => {
+                    if (dy > 0.015) {
+                        return `With ${N.toFixed(0)} kg/ha of Nitrogen, the paddy yield responds heavily, returning ${dy.toFixed(4)} tonnes of rice per kg of added N. This is a highly cost-effective fertilization phase.`;
+                    } else if (dy <= 0.015 && dy > 0) {
+                        return `At ${N.toFixed(0)} kg/ha of Nitrogen, marginal yield returns have slowed down to ${dy.toFixed(4)} t/kg-N. You are close to the biological optimization limit ($Y'(N) = 0$). Adding a tiny bit more might push yield but decreases nutrient return efficiency.`;
+                    } else {
+                        return `At ${N.toFixed(0)} kg/ha of Nitrogen, the derivative is negative (${dy.toFixed(4)}). You have entered the 'toxic excess zone'. Excess Nitrogen is burning the crop roots, causing paddy lodging, and creating severe eutrophication in Selangor irrigation canals. Stop N application immediately!`;
+                    }
+                }
+            },
+            SFP: {
+                name: "Agro Product Tech (SFP)",
+                title: "Palm Oil Extraction Rate (OER) Decelerating Kinetics",
+                desc: "Malaysia is a global leader in crude palm oil (CPO) production. Sterilization of Fresh Fruit Bunches (FFB) is the critical first stage. This curve represents CPO extraction efficiency ($E(t)$) over sterilization duration. The derivative $E'(t)$ represents the speed of extraction kinetics, pointing out the optimal thermal cutoff point to minimize boiler energy consumption.",
+                fxLatex: "E(t) = 22(1 - e^{-0.05 t})",
+                dfxLatex: "E'(t) = 1.1 e^{-0.05 t}",
+                xLabel: "Sterilization Time (t)",
+                xUnit: "Minutes",
+                yLabel: "Oil Extraction Rate E(t)",
+                yUnit: "% (Extractable Mass Percentage)",
+                dyLabel: "Extraction Speed E'(t)",
+                dyUnit: "% increase/min",
+                xMin: 0,
+                xMax: 90,
+                step: 1,
+                sources: [
+                    { name: "Malaysian Palm Oil Board (MPOB)", url: "https://www.mpob.gov.my" },
+                    { name: "Journal of Oil Palm Research", url: "https://jopr.mpob.gov.my" }
+                ],
+                f: (t) => 22 * (1 - Math.exp(-0.05 * t)),
+                df: (t) => 1.1 * Math.exp(-0.05 * t),
+                getLayman: (t, y, dy) => {
+                    if (t < 30) {
+                        return `At ${t.toFixed(0)} minutes of sterilization, the extraction rate is accelerating fast (${dy.toFixed(3)}%/min) as heat breaks down cell structures inside the palm fruits. Keep the steam boiler at optimal pressure.`;
+                    } else if (t >= 30 && t < 60) {
+                        return `At ${t.toFixed(0)} minutes, extraction is yielding ${y.toFixed(1)}% total oil but the rate of release is slowing down to ${dy.toFixed(3)}%/min. Cell walls are mostly broken.`;
+                    } else {
+                        return `At ${t.toFixed(0)} minutes, extraction is near biological limit (${y.toFixed(1)}%). The rate of return is virtually zero (${dy.toFixed(3)}%/min). Prolonging the sterilization beyond this consumes excess steam fuel without yielding any extra crude palm oil!`;
+                    }
+                }
+            }
+        };
+
+        // UI State Variables
+        let currentProgramId = "SFA";
+        let chartInstance = null;
+        let sliderEl = null;
+
+        // Initialize application on load
+        window.addEventListener('DOMContentLoaded', () => {
+            sliderEl = document.getElementById('x-slider');
+            
+            // Set initial state
+            switchProgram('SFA');
+            
+            // Listen to slider adjustments
+            sliderEl.addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                updateCalculationPanel(val);
+                updateChartSelectionLine(val);
+            });
+        });
+
+        // Dynamic formula renderer using KaTeX
+        function renderMath() {
+            const prog = PROGRAMS[currentProgramId];
+            const fxBox = document.getElementById('fx-math-box');
+            const dfxBox = document.getElementById('dfx-math-box');
+            
+            katex.render(prog.fxLatex, fxBox, { throwOnError: false, displayMode: true });
+            katex.render(prog.dfxLatex, dfxBox, { throwOnError: false, displayMode: true });
+        }
+
+        // Program switcher function
+        function switchProgram(programId) {
+            currentProgramId = programId;
+            const prog = PROGRAMS[programId];
+
+            // Update UI Tab States
+            Object.keys(PROGRAMS).forEach(id => {
+                const btn = document.getElementById(`btn-${id}`);
+                if (id === programId) {
+                    btn.className = "flex-1 min-w-[140px] px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-md border-b-2 border-emerald-950";
+                } else {
+                    btn.className = "flex-1 min-w-[140px] px-4 py-3 rounded-xl transition-all duration-300 font-medium text-sm flex items-center justify-center gap-2 bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-800 border border-slate-200";
+                }
+            });
+
+            // Update Content Text
+            document.getElementById('chart-title').innerText = prog.title;
+            document.getElementById('case-title').innerText = prog.title;
+            document.getElementById('case-description').innerText = prog.desc;
+            
+            // Render Math Equations
+            renderMath();
+
+            // Load Regional Datasets Reference
+            const srcList = document.getElementById('source-list');
+            srcList.innerHTML = '';
+            prog.sources.forEach(src => {
+                const a = document.createElement('a');
+                a.href = src.url;
+                a.target = "_blank";
+                a.className = "flex items-center justify-between p-2.5 rounded-lg border border-slate-100 hover:border-emerald-500 hover:bg-emerald-50/50 transition-all text-xs text-slate-700 font-medium group";
+                a.innerHTML = `
+                    <span>${src.name}</span>
+                    <span class="text-emerald-600 font-mono flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        visit &rarr;
+                    </span>
+                `;
+                srcList.appendChild(a);
+            });
+
+            // Re-configure Slider details
+            sliderEl.min = prog.xMin;
+            sliderEl.max = prog.xMax;
+            sliderEl.step = prog.step;
+            
+            // Set initial dynamic starting point to the center of range
+            const defaultX = (prog.xMax + prog.xMin) / 2;
+            sliderEl.value = defaultX;
+            document.getElementById('slider-min').innerText = prog.xMin;
+            document.getElementById('slider-max').innerText = prog.xMax;
+
+            // Setup metric titles dynamically
+            document.getElementById('x-metric-label').innerText = `${prog.xLabel}`;
+            document.getElementById('y-metric-label').innerText = `Value: f(x) (${prog.yUnit})`;
+            document.getElementById('dy-metric-label').innerText = `Rate: f'(x) (${prog.dyUnit})`;
+
+            // Regenerate & Plot chart visual elements
+            generateChart();
+            updateCalculationPanel(defaultX);
+        }
+
+        // Calculation processing
+        function updateCalculationPanel(x) {
+            const prog = PROGRAMS[currentProgramId];
+            const yVal = prog.f(x);
+            const dyVal = prog.df(x);
+
+            // Update panel output tags
+            document.getElementById('x-calc-val').innerText = `${x.toFixed(1)} ${prog.xUnit.split(' ')[0]}`;
+            document.getElementById('y-calc-val').innerText = `${yVal.toFixed(2)} ${prog.yUnit.split(' ')[0]}`;
+            document.getElementById('dy-calc-val').innerText = `${dyVal.toFixed(3)} ${prog.dyUnit.split(' ')[0]}`;
+
+            // Update explanation block
+            const explanationBlock = document.getElementById('expert-explanation');
+            explanationBlock.innerHTML = prog.getLayman(x, yVal, dyVal);
+        }
+
+        // Chart Data Structuring
+        function generateChart() {
+            const prog = PROGRAMS[currentProgramId];
+            
+            // Generate standard steps for mapping curves
+            const labels = [];
+            const yData = [];
+            const dyData = [];
+
+            // Plot about 50 high fidelity steps
+            const totalSteps = 50;
+            const delta = (prog.xMax - prog.xMin) / totalSteps;
+            
+            for (let i = 0; i <= totalSteps; i++) {
+                const currentX = prog.xMin + (i * delta);
+                labels.push(currentX.toFixed(1));
+                yData.push(prog.f(currentX));
+                dyData.push(prog.df(currentX));
+            }
+
+            // Destroy existing instance to clean cache canvas state
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('derivativeChart').getContext('2d');
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: `${prog.yLabel} (${prog.yUnit})`,
+                            data: yData,
+                            borderColor: '#0284c7', // Slate Blue
+                            backgroundColor: 'rgba(2, 132, 199, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: `${prog.dyLabel} (${prog.dyUnit})`,
+                            data: dyData,
+                            borderColor: '#10b981', // Mint Emerald
+                            borderDash: [5, 5],
+                            tension: 0.3,
+                            borderWidth: 2,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            const clickedX = parseFloat(chartInstance.data.labels[index]);
+                            sliderEl.value = clickedX;
+                            updateCalculationPanel(clickedX);
+                            updateChartSelectionLine(clickedX);
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleFont: { family: 'Inter', weight: 'bold' },
+                            bodyFont: { family: 'Inter' },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(3);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: `${prog.xLabel} (${prog.xUnit})`,
+                                font: { family: 'Inter', weight: '600', size: 12 }
+                            },
+                            grid: {
+                                color: '#f1f5f9'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: `${prog.yLabel} (${prog.yUnit})`,
+                                font: { family: 'Inter', weight: '600', color: '#0284c7' }
+                            },
+                            grid: {
+                                color: '#f1f5f9'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: `${prog.dyLabel} (${prog.dyUnit})`,
+                                font: { family: 'Inter', weight: '600', color: '#10b981' }
+                            },
+                            grid: {
+                                drawOnChartArea: false, // only want the grid lines for one axis
+                            },
+                        },
+                    }
+                }
+            });
+        }
+
+        // Graphical Visualizer Highlights on Interactive Point Manipulation
+        function updateChartSelectionLine(xVal) {
+            if (!chartInstance) return;
+            
+            // To provide real-time pointer feedback on ChartJS, we dynamically trigger the tooltip
+            const datasetMeta = chartInstance.getDatasetMeta(0);
+            const dataLabels = chartInstance.data.labels;
+            
+            // Find closest index
+            let closestIndex = 0;
+            let minDiff = Infinity;
+            for (let i = 0; i < dataLabels.length; i++) {
+                const diff = Math.abs(parseFloat(dataLabels[i]) - xVal);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestIndex = i;
+                }
+            }
+
+            // Programmatically reveal corresponding chart points
+            chartInstance.setActiveElements([{
+                datasetIndex: 0,
+                index: closestIndex
+            }, {
+                datasetIndex: 1,
+                index: closestIndex
+            }]);
+            
+            chartInstance.tooltip.setActiveElements([{
+                datasetIndex: 0,
+                index: closestIndex
+            }, {
+                datasetIndex: 1,
+                index: closestIndex
+            }]);
+            
+            chartInstance.update('none'); // Re-draw frame efficiently without resetting full animations
+        }
+    </script>
+</body>
+</html>
